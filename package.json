@@ -1,28 +1,49 @@
 {
-  "name": "gpap-knapsack-logger",
-  "version": "1.0.0",
+  "name": "@greenpeace-australia-pacific/gpap-knapsack-logger",
+  "version": "1.0.4",
   "main": "index.js",
-  "repository": "git@github.com:greenpeace/gpap-knapsack-logger.git",
+  "types": "index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/greenpeace/gpap-knapsack-logger.git"
+  },
   "author": "KT <tan.kairen@gmail.com>",
   "license": "SEE LICENSE IN LICENSE.txt",
   "dependencies": {
+    "@google-cloud/logging-bunyan": "^1.2.3",
+    "@types/bunyan": "^1.8.7",
+    "bunyan": "^1.8.12",
+    "bunyan-debug-stream": "^2.0.0",
     "commitlint": "^13.1.0",
+    "dsa.js": "1.3.7",
     "husky": "^7.0.1",
     "json": "^11.0.0",
     "lint-staged": "^11.1.2",
+    "lodash": "^4.17.15",
+    "morgan": "^1.9.1",
+    "object-sizeof": "^1.5.2",
     "ts-node": "^10.2.0",
-    "typescript": "^4.3.5"
+    "tslib": "^1.10.0",
+    "typescript": "^4.3.5",
+    "ulid": "^2.3.0",
+    "winston": "^3.1.0"
   },
   "devDependencies": {
     "@types/chai": "^4.2.21",
+    "@types/express": "^4.16.0",
+    "@types/faker": "^4.1.8",
+    "@types/lodash": "^4.14.149",
     "@types/mocha": "^9.0.0",
     "@typescript-eslint/eslint-plugin": "^4.29.1",
     "@typescript-eslint/parser": "^4.29.1",
+    "bin-up": "^1.3.2",
     "chai": "^4.3.4",
     "danger": "^10.6.6",
     "eslint": "^7.32.0",
+    "faker": "^4.1.0",
     "mocha": "^9.0.3",
-    "nyc": "^15.1.0"
+    "nyc": "^15.1.0",
+    "tsc": "^2.0.3"
   },
   "engines": {
     "node": ">= 12.0"
@@ -30,18 +51,20 @@
   "scripts": {
     "start:ts": "ts-node src/app.ts",
     "start": "node build/app.js",
-    "clean": "rm -rf build",
+    "clean": "find . -type f -name '*.js' -delete && find . -type f -name '*.js.map' -delete ",
     "lint": "eslint",
     "build": "yarn clean && tsc",
     "test": "mocha -r ts-node/register tests/**/*.test.ts",
-    "set-environment": "cp .private.environments/.env.$ENVIRONMENT .env",
-    "use-development": "ENVIRONMENT=development yarn set-environment",
-    "use-staging": "ENVIRONMENT=staging yarn set-environment",
-    "use-production": "ENVIRONMENT=production yarn set-environment",
-    "deploy-generic": "echo ❌❌❌TODO❌❌❌",
-    "deploy-staging": "ENVIRONMENT=staging yarn deploy-generic",
-    "deploy-production": "ENVIRONMENT=production yarn deploy-generic",
+    "npm:init": "npm init --scope=@greenpeace-australia-pacific",
+    "npm:publish": "yarn publish --access public",
     "prepush": "yarn danger:prepush",
     "prepush:prepush": "yarn danger local --base develop --dangerfile dangerfile.lite.js"
+  },
+  "bugs": {
+    "url": "https://github.com/greenpeace/gpap-knapsack-logger/issues"
+  },
+  "homepage": "https://github.com/greenpeace/gpap-knapsack-logger#readme",
+  "directories": {
+    "test": "tests"
   }
 }
