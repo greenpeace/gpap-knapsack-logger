@@ -158,7 +158,7 @@ export function stayUnderStackDriverSizeLimit(originalObject: {[key: string]: an
         }
 
         // Break the object into the recursive case (too large to log) & base case (small enough to log)
-        const {tooLargeToLog, smallEnoughToLog} = recursion.findLoggableAndUnloggableKeys(originalObject);
+        const {tooLargeToLog, smallEnoughToLog, unloggableFields} = recursion.findLoggableAndUnloggableKeys(originalObject);
 
         // Recursive case: if there are individual fields that are too big and need to be broken down further
         const brokenDownLargeFields: Array<{[key: string]: any}> = flatten(
@@ -168,13 +168,35 @@ export function stayUnderStackDriverSizeLimit(originalObject: {[key: string]: an
 
         // Base case
         const fieldsSmallEnoughToLog: Array<{[key: string]: any}> = breakDownObject(smallEnoughToLog, depth, id, rootKeyName);
+        // Add in a flag about the other keys being too large to log
+        const tooLargeToLogWReplacedValues = fieldsSmallEnoughToLog.length ? remapTooLargeToLog(unloggableFields, fieldsSmallEnoughToLog[0]) : [];
 
-        return [...fieldsSmallEnoughToLog, ...brokenDownLargeFields];
+        return [...fieldsSmallEnoughToLog, ...brokenDownLargeFields, ...tooLargeToLogWReplacedValues];
     } catch (e) {
         console.error(e);
         throw e;
     }
 
+}
+
+/**
+ * So that we don't lose the keys entirely, store them with replaced values with a warning string
+ * @param unloggableFields
+ * @param logForThis
+ */
+function remapTooLargeToLog(unloggableFields: {[key: string]: any}, logForThis: {[key: string]: any}) {
+    const logPart = Object.keys(unloggableFields).reduce(
+        (all, key) => {
+            all[key] = 'Too large to log';
+            return all;
+        },
+        {} as {[key: string]: any},
+    );
+
+    return [{
+        ...logForThis,
+        logPart,
+    }]
 }
 
 /**

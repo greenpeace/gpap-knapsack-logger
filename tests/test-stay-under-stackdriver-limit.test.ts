@@ -18,7 +18,7 @@ describe('stay under stack driver limit', () => {
 
         const result = stayUnderStackDriverSizeLimit(object);
 
-        const logParts = result;// result.map(elem => elem.logPart);
+        const logParts = result.map(elem => elem.logPart);
 
         // The way in which we expect `object` to be broken up by the Knapsack Algorithm
         const aAndB = logParts.find((elem => !!elem.a && !!elem.b));
@@ -28,7 +28,7 @@ describe('stay under stack driver limit', () => {
         const dZ = logParts.find((elem => !!elem.d && !!elem.d.z));
 
         assert.isDefined(aAndB);
-        assert.isUndefined(c, 'c should be dropped as it is a single object, too large to be logged');
+        assert.equal(c!.c, 'Too large to log');
         assert.isDefined(dX);
         assert.isDefined(dY);
         assert.isDefined(dZ);
