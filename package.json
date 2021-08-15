@@ -56,7 +56,7 @@
     "build": "yarn clean && tsc",
     "test": "mocha -r ts-node/register tests/**/*.test.ts",
     "npm:init": "npm init --scope=@greenpeace-australia-pacific",
-    "npm:publish": "yarn publish --access public",
+    "npm:publish": "yarn build && yarn publish --access public",
     "prepush": "yarn danger:prepush",
     "prepush:prepush": "yarn danger local --base develop --dangerfile dangerfile.lite.js"
   },

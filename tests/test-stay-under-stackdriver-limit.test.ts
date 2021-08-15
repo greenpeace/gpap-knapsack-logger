@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import * as faker from 'faker';
-import {stayUnderStackDriverSizeLimit} from '../util/size-limits/stay-under-stackdriver-size-limit';
+import {stayUnderStackDriverSizeLimit} from '../src/util/size-limits/stay-under-stackdriver-size-limit';
 
 describe('stay under stack driver limit', () => {
     it('should stay under', async () => {
@@ -8,7 +8,7 @@ describe('stay under stack driver limit', () => {
         const object = {
             a: 123,
             b: 12345,
-            c: faker.random.alphaNumeric(1000),
+            c: faker.random.alphaNumeric(128001),
             d: {
                 x: faker.random.alphaNumeric(128),
                 y: faker.random.alphaNumeric(128),
@@ -18,7 +18,7 @@ describe('stay under stack driver limit', () => {
 
         const result = stayUnderStackDriverSizeLimit(object);
 
-        const logParts = result.map(elem => elem.logPart);
+        const logParts = result;// result.map(elem => elem.logPart);
 
         // The way in which we expect `object` to be broken up by the Knapsack Algorithm
         const aAndB = logParts.find((elem => !!elem.a && !!elem.b));

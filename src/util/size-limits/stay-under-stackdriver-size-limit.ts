@@ -68,8 +68,15 @@ export const is = {
      * @param object
      */
     overStackDriverLimit: (object: any) => {
-        // @ts-ignore
-        return sizeof(object) > config.stackdriver.maxLogSize.bytes;
+        try {
+            // @ts-ignore
+            const size = sizeof(object);
+            console.log(size);
+            return size > config.stackdriver.maxLogSize.bytes;
+        } catch (e) {
+            console.error(e);
+            throw e;
+        }
     },
 };
 
@@ -145,23 +152,29 @@ const stackdriver = {
  * @note we are using the knapsack algorithm internally to pull this off :)
  */
 export function stayUnderStackDriverSizeLimit(originalObject: {[key: string]: any}, depth: number = 0, id: string = ulid(), rootKeyName?: string): Array<{[key: string]: any}> {
-    if (!is.overStackDriverLimit(originalObject)) {
-        return [originalObject];
+    try {
+        if (!is.overStackDriverLimit(originalObject)) {
+            return [originalObject];
+        }
+
+        // Break the object into the recursive case (too large to log) & base case (small enough to log)
+        const {tooLargeToLog, smallEnoughToLog} = recursion.findLoggableAndUnloggableKeys(originalObject);
+
+        // Recursive case: if there are individual fields that are too big and need to be broken down further
+        const brokenDownLargeFields: Array<{[key: string]: any}> = flatten(
+            Object.entries(tooLargeToLog)
+                .map(([key, field]: [string, any]) => stayUnderStackDriverSizeLimit(field, depth + 1, id, `${rootKeyName ? `${rootKeyName}.` : ''}${key}`)),
+        );
+
+        // Base case
+        const fieldsSmallEnoughToLog: Array<{[key: string]: any}> = breakDownObject(smallEnoughToLog, depth, id, rootKeyName);
+
+        return [...fieldsSmallEnoughToLog, ...brokenDownLargeFields];
+    } catch (e) {
+        console.error(e);
+        throw e;
     }
 
-    // Break the object into the recursive case (too large to log) & base case (small enough to log)
-    const {tooLargeToLog, smallEnoughToLog} = recursion.findLoggableAndUnloggableKeys(originalObject);
-
-    // Recursive case: if there are individual fields that are too big and need to be broken down further
-    const brokenDownLargeFields: Array<{[key: string]: any}> = flatten(
-        Object.entries(tooLargeToLog)
-            .map(([key, field]: [string, any]) => stayUnderStackDriverSizeLimit(field, depth + 1, id, `${rootKeyName ? `${rootKeyName}.` : ''}${key}`)),
-    );
-
-    // Base case
-    const fieldsSmallEnoughToLog: Array<{[key: string]: any}> = breakDownObject(smallEnoughToLog, depth, id, rootKeyName);
-
-    return [...fieldsSmallEnoughToLog, ...brokenDownLargeFields];
 }
 
 /**

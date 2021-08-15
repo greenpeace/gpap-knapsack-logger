@@ -1,3 +1,4 @@
+/// <reference types="bunyan" />
 // eslint-disable-next-line import/order
 import * as bunyan from 'bunyan';
 import * as path from 'path';

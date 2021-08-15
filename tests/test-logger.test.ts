@@ -1,4 +1,4 @@
-import logger from '..';
+import logger from '../index';
 
 describe('logger', () => {
     it('should log', async () => {

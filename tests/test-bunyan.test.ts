@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import * as faker from 'faker';
-import logger from '..';
+import logger from '../index';
 
 describe('bunyan test', () => {
     it('should test the bunyan logger', async () => {
