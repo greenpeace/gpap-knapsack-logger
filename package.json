@@ -1,6 +1,6 @@
 {
   "name": "@greenpeace-australia-pacific/gpap-knapsack-logger",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "main": "index.js",
   "types": "index.d.ts",
   "repository": {
@@ -51,7 +51,7 @@
   "scripts": {
     "start:ts": "ts-node src/app.ts",
     "start": "node build/app.js",
-    "clean": "find . -type f -name '*.js' -delete && find . -type f -name '*.js.map' -delete ",
+    "clean": "find . -type f -name '*.js' -not -path \"./node_modules/*\" -delete && find . -type f -name '*.js.map' -not -path \"./node_modules/*\" -delete ",
     "lint": "eslint",
     "build": "yarn clean && tsc",
     "test": "mocha -r ts-node/register tests/**/*.test.ts",
