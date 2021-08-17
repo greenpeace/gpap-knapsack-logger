@@ -185,7 +185,13 @@ export function stayUnderStackDriverSizeLimit(originalObject: {[key: string]: an
  * @param logForThis
  */
 function remapTooLargeToLog(unloggableFields: {[key: string]: any}, logForThis: {[key: string]: any}) {
-    const logPart = Object.keys(unloggableFields).reduce(
+    const unloggableKeys = Object.keys(unloggableFields);
+
+    if (unloggableKeys.length === 0){
+        return [];
+    }
+
+    const logPart = unloggableKeys.reduce(
         (all, key) => {
             all[key] = 'Too large to log';
             return all;
