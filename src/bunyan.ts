@@ -6,15 +6,14 @@ import {ulid} from 'ulid';
 // Imports the Google Cloud client library for Bunyan (Node 6+)
 import {LoggingBunyan} from '@google-cloud/logging-bunyan';
 import {is, stayUnderStackDriverSizeLimit} from './util/size-limits/stay-under-stackdriver-size-limit';
-import {getCloudFunctionDescriptor} from './cloud-function-environment-polyfill';
 import {
     getCloudFunctionNameFromGCloud,
-    isCloudFunctionEnvironment,
     isRunningOnGCloud
-} from './cloud-function-environment-detection';
+} from './gcp-environment-detection';
 
 // @ts-ignore that this module has no DefinitelyTyped type declaration
 import bunyanDebugStream = require('bunyan-debug-stream');
+import {generateStackdriverResource} from "./stackdriver-options-generator";
 
 /**
  * Create a unique name for the logs on your cloud function
@@ -38,8 +37,7 @@ function getPathToProjectRoot() {
 }
 
 // Creates a Bunyan Stackdriver Logging client
-const bunyanOptions = isCloudFunctionEnvironment() ? { resource: getCloudFunctionDescriptor() } : undefined;
-const loggingBunyan = new LoggingBunyan(bunyanOptions);
+const loggingBunyan = new LoggingBunyan({ resource: generateStackdriverResource() });
 
 // Bunyan logs order importance with ascending numbers (e.g. low risk = 0, high risk = 100).
 const min_log_level = 'trace';

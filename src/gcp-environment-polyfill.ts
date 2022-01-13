@@ -22,3 +22,16 @@ export function getCloudFunctionDescriptor(): MonitoredResource {
         },
     };
 }
+
+export function getCloudRunDescriptor(): MonitoredResource {
+    return {
+        type: "cloud_run_revision",
+        labels: {
+            configuration_name: process.env.K_CONFIGURATION!,
+            location: "australia-southeast1",
+            project_id: "gpap-engineering",
+            revision_name: process.env.K_REVISION!,
+            service_name: process.env.K_SERVICE!,
+        }
+    }
+}

@@ -17,6 +17,14 @@ export function isCloudFunctionEnvironment() {
     return !!process.env.FUNCTION_TARGET;
 }
 
+/**
+ * Detect whether the current running environment is on Google Cloud Run.
+ * @see https://cloud.google.com/run/docs/reference/container-contract#env-vars
+ */
+export function isCloudRunEnvironment() {
+    return !!process.env.K_REVISION;
+}
+
 export function getCloudFunctionNameFromGCloud() {
     return process.env.FUNCTION_NAME || process.env.K_SERVICE;
 }
