@@ -16,9 +16,9 @@ export function getCloudFunctionDescriptor(): MonitoredResource {
      */
     return {
         type: 'cloud_function',
-            labels: {
+        labels: {
             function_name: (process.env.K_SERVICE || process.env.FUNCTION_NAME)!,
-                region: (process.env.GOOGLE_CLOUD_REGION || process.env.FUNCTION_REGION)!,
+            region: (process.env.GOOGLE_CLOUD_REGION || process.env.FUNCTION_REGION)!,
         },
     };
 }

@@ -1,6 +1,6 @@
 {
   "name": "@greenpeace-australia-pacific/gpap-knapsack-logger",
-  "version": "1.0.7",
+  "version": "1.0.9",
   "main": "index.js",
   "types": "index.d.ts",
   "repository": {
