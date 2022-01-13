@@ -9,6 +9,14 @@ export function isRunningOnGCloud() {
     return process.env.X_GOOGLE_SUPERVISOR_HOSTNAME || process.env.GAE_SERVICE || process.env.FUNCTION_TARGET || process.env.FUNCTION_SIGNATURE_TYPE || process.env.K_SERVICE;
 }
 
+/**
+ * Detect whether the current running environment is a Google Cloud Function.
+ * @see https://cloud.google.com/functions/docs/configuring/env-var#newer_runtimes
+ */
+export function isCloudFunctionEnvironment() {
+    return !!process.env.FUNCTION_TARGET;
+}
+
 export function getCloudFunctionNameFromGCloud() {
     return process.env.FUNCTION_NAME || process.env.K_SERVICE;
 }
