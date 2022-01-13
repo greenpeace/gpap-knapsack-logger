@@ -71,7 +71,6 @@ export const is = {
         try {
             // @ts-ignore
             const size = sizeof(object);
-            console.log(size);
             return size > config.stackdriver.maxLogSize.bytes;
         } catch (e) {
             console.error(e);
