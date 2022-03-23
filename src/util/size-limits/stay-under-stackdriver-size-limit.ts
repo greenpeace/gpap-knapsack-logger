@@ -160,10 +160,19 @@ export function stayUnderStackDriverSizeLimit(originalObject: {[key: string]: an
         const {tooLargeToLog, smallEnoughToLog, unloggableFields} = recursion.findLoggableAndUnloggableKeys(originalObject);
 
         // Recursive case: if there are individual fields that are too big and need to be broken down further
-        const brokenDownLargeFields: Array<{[key: string]: any}> = flatten(
-            Object.entries(tooLargeToLog)
-                .map(([key, field]: [string, any]) => stayUnderStackDriverSizeLimit(field, depth + 1, id, `${rootKeyName ? `${rootKeyName}.` : ''}${key}`)),
-        );
+
+        let brokenDownLargeFields: Array<{[key: string]: any}>;
+        try {
+            brokenDownLargeFields = flatten(
+                Object.entries(tooLargeToLog)
+                    .map(([key, field]: [string, any]) => stayUnderStackDriverSizeLimit(field, depth + 1, id, `${rootKeyName ? `${rootKeyName}.` : ''}${key}`)),
+            );
+        } catch (error) {
+            if (!(error instanceof RangeError)) {
+                throw error;
+            }
+            brokenDownLargeFields = [mapRangeErrorMessage(tooLargeToLog)];
+        }
 
         // Base case
         const fieldsSmallEnoughToLog: Array<{[key: string]: any}> = breakDownObject(smallEnoughToLog, depth, id, rootKeyName);
@@ -175,7 +184,13 @@ export function stayUnderStackDriverSizeLimit(originalObject: {[key: string]: an
         console.error(e);
         throw e;
     }
+}
 
+function mapRangeErrorMessage(tooLargeToLogObject: {[key: string]: any}) {
+    return Object.keys(tooLargeToLogObject).reduce((acc, key) => {
+        acc[`error-${key}-tooLargeToLog`] = `❌ The "too large to log" fields at this path caused a RangeError, exceeding the call stack size.`;
+        return acc;
+    }, {} as {[key: string]: string});
 }
 
 /**

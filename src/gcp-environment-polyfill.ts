@@ -23,6 +23,9 @@ export function getCloudFunctionDescriptor(): MonitoredResource {
     };
 }
 
+/**
+ * @todo dont hard code location or project id
+ */
 export function getCloudRunDescriptor(): MonitoredResource {
     return {
         type: "cloud_run_revision",
